@@ -22,53 +22,37 @@ os.system('echo 60 > /sys/class/gpio/export')
 os.system('echo out > /sys/class/gpio/gpio60/direction')
 os.system('echo 1 > /sys/class/gpio/gpio60/value')
 
-#Start ZBar Process Externally; It will send most recent reading into tmp.txt
-#print "Starting ZBar"
-#os.system('./exec_zbar.sh &')
-#print "ZBar is Running"
+
 
 #if there's a valid file here, delete it
 os.system('rm -f valid.txt')
 #in a while loop, compare current tmp.txt QR hash with the approved hash from the web
 
-#curr_size = 0
-#old_size = 0
-#mode = -1 #notes the state of the last trial
+
 while (1):
 	os.system('wget --quiet https://raw.githubusercontent.com/edwardzxy/qrtest/master/valid.txt')
-    #val = subprocess.check_output(["tail", "-n", "1", "tmp.txt"]).strip()
-    #curr_size = os.path.getsize('tmp.txt')
-    #if curr_size != old_size:
-    #	mode = -1
-	#print curr_size, old_size
-	#print "Key from ZBAR QR Reading: %s" % val
-    #val_hash = hashlib.md5(val).hexdigest()
-	#print "Hashed Key from ZBAR QR Reading: %s" % val_hash
+    
 	approved = subprocess.check_output(["tail", "-n", "1", "valid.txt"])
-	#print "Approved Hash from Web: %s" % approved
+	print "Approved Hash from Web: %s" % approved
 	os.system('rm valid.txt')
-#
-    os.system("raspistill -w 320 -h 240 -o image.jpg")
+    #
+    os.system("raspistill -w 320 -h 240 -o image.jpg -t 2")
     zbarcam=subprocess.Popen("zbarimg --raw image.jpg", stdout=subprocess.PIPE, shell=True,preexec_fn=os.setsid)
     qrcodetext=zbarcam.stdout.readline()
     os.system('rm image.jpg')
-#
+    #
 	if approved in qrcodetext:
-        #if mode != 1:
-			print "QR Code Accepted"
-			mode=1
-			os.system('echo 1 > /sys/class/gpio/gpio45/value')
-			os.system('echo 1 > /sys/class/gpio/gpio44/value')
-			os.system('echo 0 > /sys/class/gpio/gpio60/value')
-			time.sleep(10)
-			os.system('echo 0 > /sys/class/gpio/gpio45/value')
-			os.system('echo 0 > /sys/class/gpio/gpio44/value')
-			os.system('echo 1 > /sys/class/gpio/gpio60/value')
+        print "QR Code Accepted"
+        os.system('echo 1 > /sys/class/gpio/gpio45/value')
+        os.system('echo 1 > /sys/class/gpio/gpio44/value')
+        os.system('echo 0 > /sys/class/gpio/gpio60/value')
+        time.sleep(10)
+        os.system('echo 0 > /sys/class/gpio/gpio45/value')
+        os.system('echo 0 > /sys/class/gpio/gpio44/value')
+        os.system('echo 1 > /sys/class/gpio/gpio60/value')
 	else:
-        #if mode != 0:
-			print "No Valid Code Presented"
-			mode=0
-			os.system('echo 1 > /sys/class/gpio/gpio60/value')
-			os.system('echo 0 > /sys/class/gpio/gpio44/value')
-			os.system('echo 0 > /sys/class/gpio/gpio45/value')
-#old_size = curr_size
+        print "No Valid Code Presented"
+        mode=0
+        os.system('echo 1 > /sys/class/gpio/gpio60/value')
+        os.system('echo 0 > /sys/class/gpio/gpio44/value')
+        os.system('echo 0 > /sys/class/gpio/gpio45/value')
