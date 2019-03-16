@@ -9,10 +9,6 @@ import RPi.GPIO as GPIO
 # BOARD编号方式，基于插座引脚编号
 GPIO.setmode(GPIO.BOARD)
 
-GPIO.setup(45, GPIO.OUT)
-GPIO.setup(44, GPIO.OUT)
-GPIO.setup(60, GPIO.OUT)
-
 #os.system('rm -f tmp.txt')
 
 #Setup I/O (Green = 45, Red = 60)
@@ -31,6 +27,7 @@ GPIO.setup(60, GPIO.OUT)
 #os.system('echo 1 > /sys/class/gpio/gpio60/value')
 
 
+GPIO.setup(28, GPIO.OUT)
 
 #if there's a valid file here, delete it
 os.system('rm -f valid.txt')
@@ -51,24 +48,18 @@ while (1):
     #
 	if approved in qrcodetext:
         print "QR Code Accepted"
-        GPIO.output(45, GPIO.HIGH)
-        GPIO.output(44, GPIO.HIGH)
-        GPIO.output(60, GPIO.LOW)
+        GPIO.output(28, GPIO.HIGH)
         #os.system('echo 1 > /sys/class/gpio/gpio45/value')
         #os.system('echo 1 > /sys/class/gpio/gpio44/value')
         #os.system('echo 0 > /sys/class/gpio/gpio60/value')
         time.sleep(10)
-        GPIO.output(45, GPIO.LOW)
-        GPIO.output(44, GPIO.LOW)
-        GPIO.output(60, GPIO.HIGH)
+        GPIO.output(28, GPIO.LOW)
         #os.system('echo 0 > /sys/class/gpio/gpio45/value')
         #os.system('echo 0 > /sys/class/gpio/gpio44/value')
         #os.system('echo 1 > /sys/class/gpio/gpio60/value')
 	else:
         print "No Valid Code Presented"
-        GPIO.output(45, GPIO.LOW)
-        GPIO.output(44, GPIO.LOW)
-        GPIO.output(60, GPIO.HIGH)
+        GPIO.output(28, GPIO.LOW)
         #os.system('echo 1 > /sys/class/gpio/gpio60/value')
         #os.system('echo 0 > /sys/class/gpio/gpio44/value')
         #os.system('echo 0 > /sys/class/gpio/gpio45/value')
