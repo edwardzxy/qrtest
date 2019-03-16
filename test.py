@@ -9,6 +9,10 @@ import RPi.GPIO as GPIO
 # BOARD编号方式，基于插座引脚编号
 GPIO.setmode(GPIO.BOARD)
 
+GPIO.setup(45, GPIO.OUT)
+GPIO.setup(44, GPIO.OUT)
+GPIO.setup(60, GPIO.OUT)
+
 #os.system('rm -f tmp.txt')
 
 #Setup I/O (Green = 45, Red = 60)
