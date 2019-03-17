@@ -35,17 +35,19 @@ os.system('rm -f valid.txt')
 
 
 while (1):
-    for i in rang(1,10)
-        os.system('wget --quiet https://raw.githubusercontent.com/edwardzxy/qrtest/master/valid.txt')
+    os.system('wget --quiet https://raw.githubusercontent.com/edwardzxy/qrtest/master/valid.txt')
 
-        approved = subprocess.check_output(["tail", "-n", "1", "valid.txt"])
-        print "Approved Hash from Web: %s" % approved
-        os.system('rm valid.txt')
-        #
-        os.system("raspistill -w 320 -h 240 -o image.jpg -t 3")
-        zbarcam = subprocess.Popen("zbarimg --raw image.jpg", stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
-        qrcodetext = zbarcam.stdout.readline()
-        os.system('rm image.jpg')
+    approved = subprocess.check_output(["tail", "-n", "1", "valid.txt"])
+    print "Approved Hash from Web: %s" % approved
+    os.system('rm valid.txt')
+    #
+    os.system("raspistill -w 320 -h 240 -o image.jpg -t 3")
+    zbarcam = subprocess.Popen("zbarimg --raw image.jpg", stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
+    qrcodetext = zbarcam.stdout.readline()
+    os.system('rm image.jpg')
+    
+    for i in rang(1,10)
+        
         #
         if approved in qrcodetext:
             print "QR Code Accepted"
