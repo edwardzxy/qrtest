@@ -6,8 +6,12 @@ import time
 import signal
 import RPi.GPIO as GPIO
 
-# BOARD编号方式，基于插座引脚编号
-GPIO.setmode(GPIO.BOARD)
+
+GPIO.cleanup()
+GPIO.setmode(GPIO.BCM)
+
+GPIO.setup(18, GPIO.OUT)
+
 
 #os.system('rm -f tmp.txt')
 
@@ -27,7 +31,6 @@ GPIO.setmode(GPIO.BOARD)
 #os.system('echo 1 > /sys/class/gpio/gpio60/value')
 
 
-GPIO.setup(28, GPIO.OUT)
 
 #if there's a valid file here, delete it
 os.system('rm -f valid.txt')
@@ -35,31 +38,35 @@ os.system('rm -f valid.txt')
 
 
 while (1):
-	os.system('wget --quiet https://raw.githubusercontent.com/edwardzxy/qrtest/master/valid.txt')
+    os.system('wget --quiet https://raw.githubusercontent.com/edwardzxy/qrtest/master/valid.txt')
     
-	approved = subprocess.check_output(["tail", "-n", "1", "valid.txt"])
-	print "Approved Hash from Web: %s" % approved
-	os.system('rm valid.txt')
+    approved = subprocess.check_output(["tail", "-n", "1", "valid.txt"])
+    print "Approved Hash from Web: %s" % approved
+    os.system('rm valid.txt')
     #
     os.system("raspistill -w 320 -h 240 -o image.jpg -t 3")
     zbarcam=subprocess.Popen("zbarimg --raw image.jpg", stdout=subprocess.PIPE, shell=True,preexec_fn=os.setsid)
     qrcodetext=zbarcam.stdout.readline()
     os.system('rm image.jpg')
     #
-	if approved in qrcodetext:
+    if approved in qrcodetext:
         print "QR Code Accepted"
-        GPIO.output(28, GPIO.HIGH)
+        GPIO.output(18, GPIO.LOW)
+
         #os.system('echo 1 > /sys/class/gpio/gpio45/value')
         #os.system('echo 1 > /sys/class/gpio/gpio44/value')
         #os.system('echo 0 > /sys/class/gpio/gpio60/value')
         time.sleep(10)
-        GPIO.output(28, GPIO.LOW)
+        GPIO.output(18, GPIO.HIGH)
+
         #os.system('echo 0 > /sys/class/gpio/gpio45/value')
         #os.system('echo 0 > /sys/class/gpio/gpio44/value')
         #os.system('echo 1 > /sys/class/gpio/gpio60/value')
-	else:
+    else:
         print "No Valid Code Presented"
-        GPIO.output(28, GPIO.LOW)
+        GPIO.output(18, GPIO.HIGH)
+
         #os.system('echo 1 > /sys/class/gpio/gpio60/value')
         #os.system('echo 0 > /sys/class/gpio/gpio44/value')
         #os.system('echo 0 > /sys/class/gpio/gpio45/value')
+
