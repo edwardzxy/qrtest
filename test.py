@@ -46,8 +46,8 @@ while (1):
     qrcodetext = zbarcam.stdout.readline()
     os.system('rm image.jpg')
     
-    for i in rang(1,10)
-        
+    for i in range(1,10):
+
         #
         if approved in qrcodetext:
             print "QR Code Accepted"
